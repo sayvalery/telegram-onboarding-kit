@@ -259,3 +259,127 @@ export default defineConfig({
     },
   ],
 });
+
+
+const operationName = "storefrontGetApartmentsList";
+const variables = {
+  companyUuid: "3818382c-c9a4-48f9-908f-f8a85a93648f",
+  criteria: {
+    state: []
+  },
+  limit: 30,
+  offset: 0,
+  sort: {
+    field: "cost",
+    order: "ASC"
+  }
+};
+
+const query = `query storefrontGetApartmentsList($companyUuid: UUID, $criteria: StorefrontApartmentCriteriaInput, $limit: Int, $offset: Int, $sort: Sort) {
+  result: storefrontGetApartmentsList(
+    companyUuid: $companyUuid
+    criteria: $criteria
+    limit: $limit
+    offset: $offset
+    sort: $sort
+  ) {
+    collection {
+      ...StorefrontRealEstateList
+      __typename
+    }
+    maxBuildDate
+    maxCost
+    maxFloor
+    maxSquare
+    minCost
+    minFloor
+    minSquare
+    total
+    __typename
+  }
+}
+
+fragment StorefrontRealEstateList on StorefrontRealEstateList {
+  apartment {
+    ...StorefrontApartment
+    __typename
+  }
+  bookingExpiresAt
+  companyUuid
+  cost
+  externalId
+  housingComplexUuid
+  housingComplexName
+  housingUuid
+  layoutPhoto
+  layoutUuid
+  name
+  number
+  square
+  state
+  status
+  costPerSquare
+  housingBuildDate
+  housingNumber
+  type
+  storeroom {
+    ...StorefrontStoreroom
+    __typename
+  }
+  parking {
+    ...StorefrontParking
+    __typename
+  }
+  uuid
+  housingFloorsCount
+  __typename
+}
+
+fragment StorefrontApartment on StorefrontApartment {
+  balconiesCount
+  combinedWcsCount
+  finishCondition
+  flatNumber
+  floor
+  isApartments
+  isEuroFlat
+  isPenthouse
+  kitchenArea
+  loggiasCount
+  roomsCount
+  separateWcsCount
+  unitNumber
+  windowsView
+  __typename
+}
+
+fragment StorefrontStoreroom on StorefrontStoreroom {
+  floor
+  isCamera
+  isHeating
+  isSecurity
+  __typename
+}
+
+fragment StorefrontParking on StorefrontParking {
+  floor
+  isCamera
+  isElectricity
+  isHeating
+  isSecurity
+  __typename
+}`;
+
+
+fetch('https://gql.dvizh.tech/gql', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    query,
+    variables,
+  }),
+})
+.then(response => response.json())
+.then(data => console.log('data returned:', data));
