@@ -275,6 +275,18 @@ const variables = {
   }
 };
 
+const operationName2 = "getLoanOffer";
+const variables2 = {
+  age: 30,
+  loanPeriod: 30,
+  agendaType: "primary_housing",
+  isRfCitizen: true,
+  housingComplexUuid: "ed2f5053-a52c-4398-9226-a57d05a34e9b",
+  initialPayment: "15000000",
+  cost: "30000000",
+  mortgageType: "STANDARD"
+};
+
 const query = `query storefrontGetApartmentsList($companyUuid: UUID, $criteria: StorefrontApartmentCriteriaInput, $limit: Int, $offset: Int, $sort: Sort) {
   result: storefrontGetApartmentsList(
     companyUuid: $companyUuid
@@ -370,6 +382,35 @@ fragment StorefrontParking on StorefrontParking {
   __typename
 }`;
 
+const query2 = `query getLoanOffer($age: Int, $loanPeriod: Int, $agendaType: LoanPurpose, $isRfCitizen: Boolean, $housingComplexUuid: UUID, $initialPayment: BigInt, $cost: BigInt!, $mortgageType: MortgageType) {
+  getLoanOffer(age: $age, loanPeriod: $loanPeriod, agendaType: $agendaType, isRfCitizen: $isRfCitizen, housingComplexUuid: $housingComplexUuid, initialPayment: $initialPayment, cost: $cost, mortgageType: $mortgageType) {
+    id,
+    name,
+    bankId,
+    bankName,
+    bankLogo,
+    rate,
+    recommendedIncomeCoeff,
+    periods {
+      period, 
+      amount
+    },
+    minInitialPayment,
+    maxCreditPeriod,
+    maxCreditAmount,
+    minOverallExp,
+    minAge,
+    minLastJobExp,
+    maxAge,
+    realtyCostIncreasePercent,
+    periodParams{
+      months,
+      rate,
+      monthlyPayment
+    },
+    strictlyMatchesLoanPeriod
+  }
+}`;
 
 fetch('https://gql.dvizh.tech/gql', {
   method: 'POST',
@@ -382,4 +423,18 @@ fetch('https://gql.dvizh.tech/gql', {
   }),
 })
 .then(response => response.json())
-.then(data => console.log('data returned:', data));
+.then(data => console.log(data));
+
+fetch('https://gql.dvizh.tech/gql', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    operationName: operationName2,
+    query: query2,
+    variables: variables2,
+  }),
+})
+.then(response => response.json())
+.then(data => console.log(data));
