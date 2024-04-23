@@ -24,8 +24,8 @@ export default async () => {
               "<b>👛 Wallet Pay</b> and <b>Telegram Payments</b> ready. Add custom methods easily",
               "Subscriptions or One-time payments",
             ],
-            products: products, // products from the API
-            mainButtonText: "Buy for ${products[0].name}",
+            products: products, 
+            mainButtonText: "Выбрать {name}",
             popup: {
               // popup for payment methods choice
               type: "web",

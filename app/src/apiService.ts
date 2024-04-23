@@ -7,10 +7,6 @@ export async function getApartmentsList() {
     },
     limit: 30,
     offset: 0,
-    sort: {
-      field: "cost",
-      order: "ASC",
-    },
   };
 
   const query = `query storefrontGetApartmentsList($companyUuid: UUID, $criteria: StorefrontApartmentCriteriaInput, $limit: Int, $offset: Int, $sort: Sort) {
@@ -135,8 +131,8 @@ export async function getLoanOffer() {
     agendaType: "primary_housing",
     isRfCitizen: true,
     housingComplexUuid: "ed2f5053-a52c-4398-9226-a57d05a34e9b",
-    initialPayment: "15000000",
-    cost: "30000000",
+    initialPayment: "5000000",
+    cost: "15000000",
     mortgageType: "STANDARD",
   };
 
@@ -184,7 +180,8 @@ export async function getLoanOffer() {
   const products = data2.data.getLoanOffer.map((offer) => ({
     id: offer.id.toString(),
     title: offer.bankName,
-    description: offer.periods.length + ' программ',
+    description: 'от ' + offer.periods[0].amount + ' ₽',
+    discount: offer.periods.length + ' программ',
     price: 'от ' + offer.periods[0].amount + ' ₽',
   }));
 
