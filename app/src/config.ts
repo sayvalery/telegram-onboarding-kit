@@ -1,319 +1,118 @@
-import { defineConfig } from '@tok/generation';
+import { defineConfig } from "@tok/generation";
+import { getApartmentsList, getLoanOffer } from "./apiService";
 
-const operationName = "storefrontGetApartmentsList";
-const variables = {
-  companyUuid: "3818382c-c9a4-48f9-908f-f8a85a93648f",
-  criteria: {
-    state: []
-  },
-  limit: 30,
-  offset: 0,
-  sort: {
-    field: "cost",
-    order: "ASC"
-  }
-};
+export default async () => {
+  const products = await getLoanOffer();
 
-const operationName2 = "getLoanOffer";
-const variables2 = {
-  age: 30,
-  loanPeriod: 30,
-  agendaType: "primary_housing",
-  isRfCitizen: true,
-  housingComplexUuid: "ed2f5053-a52c-4398-9226-a57d05a34e9b",
-  initialPayment: "15000000",
-  cost: "30000000",
-  mortgageType: "STANDARD"
-};
+  return defineConfig({
 
-
-const query = `query storefrontGetApartmentsList($companyUuid: UUID, $criteria: StorefrontApartmentCriteriaInput, $limit: Int, $offset: Int, $sort: Sort) {
-  result: storefrontGetApartmentsList(
-    companyUuid: $companyUuid
-    criteria: $criteria
-    limit: $limit
-    offset: $offset
-    sort: $sort
-  ) {
-    collection {
-      ...StorefrontRealEstateList
-      __typename
-    }
-    maxBuildDate
-    maxCost
-    maxFloor
-    maxSquare
-    minCost
-    minFloor
-    minSquare
-    total
-    __typename
-  }
-}
-
-fragment StorefrontRealEstateList on StorefrontRealEstateList {
-  apartment {
-    ...StorefrontApartment
-    __typename
-  }
-  bookingExpiresAt
-  companyUuid
-  cost
-  externalId
-  housingComplexUuid
-  housingComplexName
-  housingUuid
-  layoutPhoto
-  layoutUuid
-  name
-  number
-  square
-  state
-  status
-  costPerSquare
-  housingBuildDate
-  housingNumber
-  type
-  storeroom {
-    ...StorefrontStoreroom
-    __typename
-  }
-  parking {
-    ...StorefrontParking
-    __typename
-  }
-  uuid
-  housingFloorsCount
-  __typename
-}
-
-fragment StorefrontApartment on StorefrontApartment {
-  balconiesCount
-  combinedWcsCount
-  finishCondition
-  flatNumber
-  floor
-  isApartments
-  isEuroFlat
-  isPenthouse
-  kitchenArea
-  loggiasCount
-  roomsCount
-  separateWcsCount
-  unitNumber
-  windowsView
-  __typename
-}
-
-fragment StorefrontStoreroom on StorefrontStoreroom {
-  floor
-  isCamera
-  isHeating
-  isSecurity
-  __typename
-}
-
-fragment StorefrontParking on StorefrontParking {
-  floor
-  isCamera
-  isElectricity
-  isHeating
-  isSecurity
-  __typename
-}`;
-
-const query2 = `query getLoanOffer($age: Int, $loanPeriod: Int, $agendaType: LoanPurpose, $isRfCitizen: Boolean, $housingComplexUuid: UUID, $initialPayment: BigInt, $cost: BigInt!, $mortgageType: MortgageType) {
-  getLoanOffer(age: $age, loanPeriod: $loanPeriod, agendaType: $agendaType, isRfCitizen: $isRfCitizen, housingComplexUuid: $housingComplexUuid, initialPayment: $initialPayment, cost: $cost, mortgageType: $mortgageType) {
-    id,
-    name,
-    bankId,
-    bankName,
-    bankLogo,
-    rate,
-    recommendedIncomeCoeff,
-    periods {
-      period, 
-      amount
-    },
-    minInitialPayment,
-    maxCreditPeriod,
-    maxCreditAmount,
-    minOverallExp,
-    minAge,
-    minLastJobExp,
-    maxAge,
-    realtyCostIncreasePercent,
-    periodParams{
-      months,
-      rate,
-      monthlyPayment
-    },
-    strictlyMatchesLoanPeriod
-  }
-}`;
-
-
-let query1Result;
-let query2Result;
-let products;
-
-
-fetch('https://gql.dvizh.tech/gql', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    query,
-    variables,
-  }),
-})
-.then(response => response.json())
-.then(data => {
-  console.log(data);
-  query1Result = data;
-});
-
-fetch('https://gql.dvizh.tech/gql', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    operationName: operationName2,
-    query: query2,
-    variables: variables2,
-  }),
-})
-.then(response => response.json())
-.then(data => {
-  console.log(data);
-  query2Result = data;
-  products = query2Result.data.getLoanOffer.map(offer => ({
-    id: offer.id.toString(),
-    title: offer.name,
-    description: offer.bankName,
-    price: offer.rate, // или любое другое поле, которое вы хотите использовать для цены
-  }));
-  console.log(products);
-});
-
-
-
-
-
-export default defineConfig({
-  // If you want to add language/currency localization – see ./examples/meditation as reference
-
-  pages: [
-    {
-      slides: [
-        // intro
-        {
-          media: {
-            type: 'sticker',
-            src: import('./assets/stickers/bear.tgs'),
-            size: 250,
-          },
-          shape: 'square',
-          pagination: 'count',
-          title: 'Привет, любитель ипотеки',
-          description:
-            "Хочешь купить себе квартиру, но нет денег?<br><br>It's <b>simple</b>, <b>fast</b>, highly <b>customizable</b> and <a href='https://github.com/Easterok/telegram-onboarding-kit' target='_blank'>open-source</a>!",
-          button: 'Next',
-        },
-
-        // form
-        {
-          extends: 'form', // note, it's important to extend from 'form' here
-          media: {
-            type: 'sticker',
-            src: import('./assets/stickers/duck_spy.tgs'),
-            size: 150,
-          },
-          shape: 'square',
-          pagination: 'count',
-          title: 'Forms',
-          description: 'User fills in the form – the bot receives the data',
-          form: [
-            {
-              name: 'loanPeriod',
-              type: 'number',
-              label: 'Срок кредита',
-              value: variables2.loanPeriod, // pre-fill with current data
+    pages: [
+      {
+        slides: [
+          // intro
+          {
+            extends: "paywall",
+            media: {
+              type: "sticker",
+              src: import("./assets/stickers/duck_money.tgs"),
+              size: 150,
             },
-            {
-              id: 'text_from_form',
-              placeholder: 'Text input',
-              type: 'text',
+            shape: "square",
+            title: "Your beautiful Paywall",
+            list: [
+              "Adjustable product cards",
+              "<b>👛 Wallet Pay</b> and <b>Telegram Payments</b> ready. Add custom methods easily",
+              "Subscriptions or One-time payments",
+            ],
+            products: products, // products from the API
+            mainButtonText: "Buy for {price}",
+            popup: {
+              // popup for payment methods choice
+              type: "web",
             },
-            {
-              id: 'number_from_form',
-              placeholder: 'Number input',
-              type: 'number',
-            },
-            {
-              id: 'checkbox_from_form',
-              placeholder: 'Checkbox',
-              type: 'checkbox',
-            },
-          ],
-          button: 'Next',
-        },
-
-        // go to paywall slide
-        {
-          media: {
-            type: 'sticker',
-            src: import('./assets/stickers/duck_knife.tgs'),
-            size: 250,
+            links: [
+              {
+                text: "Privacy policy",
+                href: "https://google.com",
+              },
+              {
+                text: "Terms of use",
+                href: "https://google.com",
+              },
+            ],
           },
-          shape: 'square',
-          pagination: 'count',
-          textAlign: 'center',
-          title: 'But onboarding slides are not enough...',
-          description: "Let's go to Paywall",
-          button: {
-            content: 'Go to Paywall',
-            to: '/paywall',
-          },
-        },
-      ],
-    },
 
-    // paywall
-    {
-      extends: 'paywall',
-      path: '/paywall',
-      media: {
-        type: 'sticker',
-        src: import('./assets/stickers/duck_money.tgs'),
-        size: 150,
+          {
+            media: {
+              type: "sticker",
+              src: import("./assets/stickers/bear.tgs"),
+              size: 250,
+            },
+            shape: "square",
+            pagination: "count",
+            title: "Привет, маленький любитель ипотеки",
+            description:
+              "Хочешь купить себе квартиру, но нет денег?<br><br>It's <b>simple</b>, <b>fast</b>, highly <b>customizable</b> and <a href='https://github.com/Easterok/telegram-onboarding-kit' target='_blank'>open-source</a>!",
+            button: "Next",
+          },
+
+          // form
+          {
+            extends: "form", // note, it's important to extend from 'form' here
+            media: {
+              type: "sticker",
+              src: import("./assets/stickers/duck_spy.tgs"),
+              size: 150,
+            },
+            shape: "square",
+            pagination: "count",
+            title: "Forms",
+            description: "User fills in the form – the bot receives the data",
+            form: [
+              {
+                name: "loanPeriod",
+                type: "number",
+                label: "Срок кредита",
+              },
+              {
+                id: "text_from_form",
+                placeholder: "Text input",
+                type: "text",
+              },
+              {
+                id: "number_from_form",
+                placeholder: "Number input",
+                type: "number",
+              },
+              {
+                id: "checkbox_from_form",
+                placeholder: "Checkbox",
+                type: "checkbox",
+              },
+            ],
+            button: "Next",
+          },
+
+          // go to paywall slide
+          {
+            media: {
+              type: "sticker",
+              src: import("./assets/stickers/duck_knife.tgs"),
+              size: 250,
+            },
+            shape: "square",
+            pagination: "count",
+            textAlign: "center",
+            title: "But onboarding slides are not enough...",
+            description: "Let's go to Paywall",
+            button: {
+              content: "Go to Paywall",
+              to: "/paywall",
+            },
+          },
+        ],
       },
-      shape: 'square',
-      title: 'Your beautiful Paywall',
-      list: [
-        'Adjustable product cards',
-        '<b>👛 Wallet Pay</b> and <b>Telegram Payments</b> ready. Add custom methods easily',
-        'Subscriptions or One-time payments',
-      ],
-      products: products,
-      mainButtonText: 'Buy for {price}',
-      popup: {
-        // popup for payment methods choice
-        type: 'web',
-      },
-      links: [
-        {
-          text: 'Privacy policy',
-          href: 'https://google.com',
-        },
-        {
-          text: 'Terms of use',
-          href: 'https://google.com',
-        },
-      ],
-    },
-  ],
-});
-
+      // ... остальные страницы ...
+    ],
+  });
+};

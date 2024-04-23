@@ -1,4 +1,5 @@
 import '@tok/ui/styles/global.scss';
+import { getApartmentsList, getLoanOffer } from '../../app/src/apiService.ts'; // Импортируйте функции
 
 import { DefinePresetsPlugin } from '@tok/generation/plugins/definePresets';
 import { FormStatePlugin } from '@tok/generation/plugins/formState';
@@ -18,16 +19,20 @@ import { BootstrapConfig } from './defineConfig';
 
 type _App = Parameters<typeof createApp>[0];
 
-export function bootstrap<T extends BootstrapConfig<any>>(
+export async function bootstrap<T extends BootstrapConfig<any>>(
   App: _App,
-  config: T
+  configFunc: () => Promise<T>
 ) {
+  const apartments = await getApartmentsList(); // Вызовите функции и дождитесь их выполнения
+  const loanOffers = await getLoanOffer();
+  const config = await configFunc();
   const { fallback, ...asyncLocales } = config.locale || {};
 
   const i18nOptions = {
     default: fallback || 'en',
     asyncLocales,
   };
+  console.log(config);
 
   const pages = config.pages.map((config, index) => {
     return {
