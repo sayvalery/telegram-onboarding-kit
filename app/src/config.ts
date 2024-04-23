@@ -94,7 +94,7 @@ export default async () => {
       path: "/paywall",
       media: {
         type: "sticker",
-        src: import("./assets/stickers/dance.tgs"),
+        src: import("./assets/stickers/dance2.tgs"),
         size: 150,
       },
       shape: "square",
@@ -102,10 +102,6 @@ export default async () => {
       description: "Я даже не ожидал, что кто-то тебе ответит, но ты посмотри! <br>",
       products: products,
       mainButtonText: "Выбрать {title}",
-      popup: {
-        // popup for payment methods choice
-        type: "web",
-      },
       links: [
         {
           text: "Privacy policy",

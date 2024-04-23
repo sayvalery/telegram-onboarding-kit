@@ -111,6 +111,7 @@ export async function getApartmentsList() {
   });
 
   const data = await response.json();
+  console.log(data);
   
   const aparts = data.data.result.collection.map((apart) => ({
     id: apart.externalId,
