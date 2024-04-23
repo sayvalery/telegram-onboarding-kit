@@ -25,7 +25,7 @@ export default async () => {
               "Subscriptions or One-time payments",
             ],
             products: products, // products from the API
-            mainButtonText: "Buy for {price}",
+            mainButtonText: "Buy for ${products[0].name}",
             popup: {
               // popup for payment methods choice
               type: "web",
