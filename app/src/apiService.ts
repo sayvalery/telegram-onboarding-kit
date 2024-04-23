@@ -118,6 +118,7 @@ export async function getApartmentsList() {
     title: apart.name,
     description: apart.square,
     price: apart.cost,
+    layoutPhoto: apart.layoutPhoto,
   }));
 
   console.log(aparts);

@@ -46,7 +46,17 @@ export async function bootstrap<T extends BootstrapConfig<any>>(
 
   const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL || '/'),
-    routes: ([] as RouteRecordRaw[]).concat(pages).concat({
+    routes: ([] as RouteRecordRaw[])
+    .concat(pages)
+    .concat({
+      path: '/storefront',
+      component: () => import('../../app/src/HomePage.vue'), // Замените на путь к вашему компоненту
+      meta: {
+        // Здесь вы можете добавить любые метаданные, которые вам нужны
+        apartments,
+      },
+    })
+    .concat({
       path: '/not-found',
       alias: '/:catchAll(.*)*',
       redirect: '/',
