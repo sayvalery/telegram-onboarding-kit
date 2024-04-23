@@ -5,43 +5,10 @@ export default async () => {
   const products = await getLoanOffer();
 
   return defineConfig({
-
     pages: [
       {
         slides: [
           // intro
-          {
-            extends: "paywall",
-            media: {
-              type: "sticker",
-              src: import("./assets/stickers/duck_money.tgs"),
-              size: 150,
-            },
-            shape: "square",
-            title: "Your beautiful Paywall",
-            list: [
-              "Adjustable product cards",
-              "<b>👛 Wallet Pay</b> and <b>Telegram Payments</b> ready. Add custom methods easily",
-              "Subscriptions or One-time payments",
-            ],
-            products: products, 
-            mainButtonText: "Выбрать {name}",
-            popup: {
-              // popup for payment methods choice
-              type: "web",
-            },
-            links: [
-              {
-                text: "Privacy policy",
-                href: "https://google.com",
-              },
-              {
-                text: "Terms of use",
-                href: "https://google.com",
-              },
-            ],
-          },
-
           {
             media: {
               type: "sticker",
@@ -52,7 +19,12 @@ export default async () => {
             pagination: "count",
             title: "Привет, маленький любитель ипотеки",
             description:
-              "Хочешь купить себе квартиру, но нет денег?<br><br>It's <b>simple</b>, <b>fast</b>, highly <b>customizable</b> and <a href='https://github.com/Easterok/telegram-onboarding-kit' target='_blank'>open-source</a>!",
+              "Хочешь купить себе квартиру, но нет денег?<br><br>Попробуй посчитать, может и твоих грошей хватит, чтобы заплатить за квартиру к 80 годам!",
+            list: [
+              "Быстро получишь расчет",
+              "Без документов, верим на слово",
+              "Больше 30 банков в системе",
+            ],
             button: "Next",
           },
 
@@ -66,27 +38,32 @@ export default async () => {
             },
             shape: "square",
             pagination: "count",
-            title: "Forms",
-            description: "User fills in the form – the bot receives the data",
+            title: "Твои данные",
+            description: "Нужны только для расчета, ничего не будем сохранять. Точно-точно!",
             form: [
               {
                 name: "loanPeriod",
                 type: "number",
-                label: "Срок кредита",
+                placeholder: "На какой срок",
               },
               {
                 id: "text_from_form",
-                placeholder: "Text input",
-                type: "text",
+                type: "number",
+                placeholder: "Первый взнос",
               },
               {
                 id: "number_from_form",
-                placeholder: "Number input",
-                type: "number",
+                type: "text",
+                placeholder: "Зачем тебе ипотека",
+              },
+              {
+                id: "family",
+                placeholder: "Покупаю с семьей",
+                type: "checkbox",
               },
               {
                 id: "checkbox_from_form",
-                placeholder: "Checkbox",
+                placeholder: "Ебу гусей",
                 type: "checkbox",
               },
             ],
@@ -103,12 +80,45 @@ export default async () => {
             shape: "square",
             pagination: "count",
             textAlign: "center",
-            title: "But onboarding slides are not enough...",
-            description: "Let's go to Paywall",
+            title: "Спрашиваем у банков...",
+            description: "Помни, это предварительные данные, никакой оферты. Если что-то понравилось, ты сможешь дальше оформить сделку. Но тебе конечно с этим жить потом.",
             button: {
-              content: "Go to Paywall",
+              content: "Посмотреть 98 предложений",
               to: "/paywall",
             },
+          },
+        ],
+      },
+      {
+        slides: [
+          // intro
+          {
+            extends: "paywall",
+            path: "/paywall",
+            media: {
+              type: "sticker",
+              src: import("./assets/stickers/duck_money.tgs"),
+              size: 150,
+            },
+            shape: "square",
+            title: "Смотри сколько предложений",
+            description: "Я даже не ожидал, что кто-то тебе ответит, но ты посмотри! <br>",
+            products: products,
+            mainButtonText: "Выбрать {title}",
+            popup: {
+              // popup for payment methods choice
+              type: "web",
+            },
+            links: [
+              {
+                text: "Privacy policy",
+                href: "https://dvizh.io",
+              },
+              {
+                text: "Terms of use",
+                href: "https://dvizh.io",
+              },
+            ],
           },
         ],
       },
